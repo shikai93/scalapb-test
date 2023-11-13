@@ -12,10 +12,15 @@ object Settings {
   val protoSources: Seq[sbt.File] = Seq(
     file("../protos/")
   )
+  val wellknownSources: Seq[java.io.File] = Seq(
+    file("../vendor/")
+  )
 
   val pbGenSettings: Seq[Def.Setting[_]] = Seq(
     Compile / unmanagedResourceDirectories ++= protoSources, // to include the raw proto files in the jar
     Compile / PB.protoSources := protoSources,
+    Compile / PB.includePaths := wellknownSources ++ protoSources,
+
     Compile / PB.targets := Seq(
       PB.gens.java -> (Compile / sourceManaged).value,
       scalapb.gen(javaConversions = true, lenses = true) -> (Compile / sourceManaged).value
